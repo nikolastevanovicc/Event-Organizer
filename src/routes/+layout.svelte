@@ -1,0 +1,32 @@
+<script>
+    import { FloatingLabelInput, Helper } from 'flowbite-svelte';
+  import { List, Li, Card, Button, Navbar, NavBrand, NavLi, NavUl, NavHamburger, Input,P } from 'flowbite-svelte';
+  import { onMount } from 'svelte';
+  import { ArrowRightOutline, HomeSolid, SearchOutline, CashSolid, MailBoxSolid,PhoneSolid  } from 'flowbite-svelte-icons';
+    import "../app.css";
+  </script>
+  
+  <slot />
+  <Navbar class = "fixed w-full top-0 left-0 bg-[#e5e7eb] bg-opacity-95">
+    <NavBrand href="/">
+      <img src="src\lib\assets\logo-no-background.png" class="me-3 h-7 sm:h-14" alt="Event Organizers" />
+      <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Event Organizers</span>
+    </NavBrand>
+    <div class="flex md:order-2">
+      <Button color="none" data-collapse-toggle="mobile-menu-3" aria-controls="mobile-menu-3" aria-expanded="false" class="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 me-1">
+        <SearchOutline class="w-5 h-5" />
+      </Button>
+      <div class="hidden relative md:block">
+        <div class="flex absolute inset-y-0 start-0 items-center ps-3 pointer-events-none">
+          <SearchOutline class="w-4 h-4" />
+        </div>
+        <Input id="search-navbar" class="ps-10" placeholder="Search..." />
+      </div>
+      <NavHamburger />
+    </div>
+    <NavUl>
+      <NavLi href="/" active={true}>Home</NavLi>
+      <NavLi href="/adminOrganizer/1">Admin Organizer</NavLi>
+      <NavLi href="/adminUser/1">Admin User</NavLi>
+    </NavUl>
+  </Navbar>
