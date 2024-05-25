@@ -2,39 +2,37 @@
   import { FloatingLabelInput, Helper } from 'flowbite-svelte';
   import { List, Li, Card, Button, Navbar, NavBrand, NavLi, NavUl, NavHamburger, Input,P } from 'flowbite-svelte';
   import { onMount } from 'svelte';
-  import dataa from '../../../lib/assets/data.json';
   import { ArrowRightOutline, HomeSolid, SearchOutline, CashSolid, MailBoxSolid,PhoneSolid  } from 'flowbite-svelte-icons';
   export let data;
   let festivals = [];
 
-console.log("data", data)
-let organizers = [];
-let organizer;
-onMount(async () => {
-  const actualId = data.id
-  Object.entries(dataa.organizatoriFestivala).forEach(([key, value]) => {
-    if (key == actualId) {
-      organizer = value;
-    }
-    organizers = organizers; 
-  });
 
-  console.log("organizerrrr", organizer)
+  let organizer;
+  onMount(async () => {
+    const actualId = data.id;
+    const response = await fetch('https://event-organizer-dae1b-default-rtdb.europe-west1.firebasedatabase.app/organizatoriFestivala.json');
+    const organizatoriFestivala = await response.json();
 
-  if (organizer && organizer.festivali) {
-    Object.entries(dataa.festivali).forEach(([key, value]) => {
-      if (key == organizer.festivali) {
-        Object.entries(value).forEach(([key2, value2]) => {
-          const festival = { id: key2, ...value2 }; // Dodajemo ključ kao id i širimo sve ostale vrednosti
-          festivals.push(festival);
-          festivals = festivals;
-        });
+    Object.entries(organizatoriFestivala).forEach(([key, value]) => {
+      if (key == actualId) {
+        organizer = value;
       }
     });
-  }
 
-  console.log("festivalsssssssss", festivals)
-});
+    if (organizer && organizer.festivali) {
+      const responseFestivals = await fetch('https://event-organizer-dae1b-default-rtdb.europe-west1.firebasedatabase.app/festivali.json');
+      const festivali = await responseFestivals.json();
+
+      Object.entries(festivali).forEach(([key, value]) => {
+        if (key == organizer.festivali) {
+          Object.entries(value).forEach(([key2, value2]) => {
+            const festival = { id: key2, ...value2 };
+            festivals = [...festivals, festival]; // Update reactively
+          });
+        }
+      });
+    }
+  });
 </script>
 
 
@@ -67,7 +65,7 @@ onMount(async () => {
 </div>
   <div class=" flex justify-center items-center my-14">
     <div class="grid md:grid-cols-4 sm:grid-cols-2 gap-4 w-[80%] mt-14">
-      {#each Object.values(festivals) as festival}
+      {#each festivals as festival}
       <Card img={festival.slike[0]}>
         <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{festival.naziv}</h5>
         <div class="flex items-center">
@@ -81,7 +79,7 @@ onMount(async () => {
             <p class = "font-bold">{festival.cena} RSD</p>
         </div>
       </Card>
-      {/each}
+    {/each}
     </div>
   </div>
   <style>

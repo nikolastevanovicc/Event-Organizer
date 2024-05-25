@@ -2,29 +2,27 @@
     import { Img, TextPlaceholder } from 'flowbite-svelte';
     import { List, Li, Card, Button, Navbar, NavBrand, NavLi, NavUl, NavHamburger, Input, Heading, P, Carousel  } from 'flowbite-svelte';
     import { ArrowLeftOutline, ArrowRightOutline, CashSolid, SearchOutline  } from 'flowbite-svelte-icons';
-    import dataa from '../../../lib/assets/data.json';
     import { onMount } from 'svelte';
     export let data;
 
-    let trenutnaSlika = 1;
-    // export let id = undefined;
-    let festival;    
-    console.log("data", data)
+    let trenutnaSlika = 0;
+  let festival = null;
 
   onMount(async () => {
-    const actualId = data.id
-    console.log("actualId", actualId)
-    Object.values(dataa.festivali).forEach((value) => {
-    Object.entries(value).forEach(([key, value2]) => {
-      console.log("key", key)
-      if (key == data.id){
-      festival = value2;
-      }
+    const actualId = data.id;
+    const response = await fetch('https://event-organizer-dae1b-default-rtdb.europe-west1.firebasedatabase.app/festivali.json');
+    const festivali = await response.json();
+    
+    Object.values(festivali).forEach(value => {
+      Object.entries(value).forEach(([key, value2]) => {
+        if (key == actualId) {
+          festival = value2;
+        }
+      });
     });
-    festival = festival;
-    console.log("festival", festival)
+    console.log("festival", festival);
   });
-});
+
 
 
 </script>
