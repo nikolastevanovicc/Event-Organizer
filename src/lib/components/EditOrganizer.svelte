@@ -7,18 +7,27 @@
 
   export let organizerId = undefined;
   let formModal = false;
+  let loginModal = false;
+  let registerModal = false;
 
-let loginModal = false;
-let registerModal = false;
-function closeAndNavigate() {
-formModal = false;
-window.location.href = '../editUser/add';
-}
+  function closeAndNavigate() {
+    formModal = false;
+    window.location.href = '../editUser/add';
+  }
+
   let festivals = [];
   let organizer = {
     adresa: '',
     email: '',
     festivali: '',
+    godinaOsnivanja: '',
+    kontaktTelefon: '',
+    logo: '',
+    naziv: ''
+  };
+  let errors = {
+    adresa: '',
+    email: '',
     godinaOsnivanja: '',
     kontaktTelefon: '',
     logo: '',
@@ -68,13 +77,33 @@ window.location.href = '../editUser/add';
   }
 
   function validateOrganizer(organizer) {
+    let isValid = true;
+    const currentYear = new Date().getFullYear();
+
     for (let key in organizer) {
       if (!organizer[key]) {
-        alert(`Molimo unesite ${key}.`);
-        return false;
+        errors[key] = `Molimo unesite ${key}.`;
+        isValid = false;
+      } else {
+        errors[key] = '';
+      }
+
+      if (key === 'email' && !/^\S+@\S+\.\S+$/.test(organizer[key])) {
+        errors[key] = 'Molimo unesite validan email.';
+        isValid = false;
+      }
+
+      if (key === 'kontaktTelefon' && !/^(\+?\d{1,3}[-.\s]?)?(\(?\d{1,4}\)?[-.\s]?)?[\d\s/.-]{5,}$/i.test(organizer[key])) {
+        errors[key] = 'Molimo unesite validan broj telefona.';
+        isValid = false;
+      }
+
+      if (key === 'godinaOsnivanja' && (!/^\d{4}$/.test(organizer[key]) || organizer[key] < 1900 || organizer[key] > currentYear)) {
+        errors[key] = `Molimo unesite validnu godinu između 1900 i ${currentYear}.`;
+        isValid = false;
       }
     }
-    return true;
+    return isValid;
   }
 
   async function submitOrganizer(event) {
@@ -114,7 +143,8 @@ window.location.href = '../editUser/add';
     }
   }
 </script>
-<Navbar class = "fixed w-full top-0 left-0 bg-[#e5e7eb] bg-opacity-95">
+
+<Navbar class="fixed w-full top-0 left-0 bg-[#e5e7eb] bg-opacity-95">
   <NavBrand href="/">
     <img src="../src/lib/assets/logo-no-background.png" class="me-3 h-7 sm:h-14" alt="Event Organizers" />
     <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Event Organizers</span>
@@ -129,6 +159,7 @@ window.location.href = '../editUser/add';
     <NavLi on:click={() => (formModal = true)}>Login</NavLi>
   </NavUl>
 </Navbar>
+
 <Modal bind:open={formModal} size="xs" autoclose={false} class="w-full">
   <form class="flex flex-col space-y-6" action="#">
     <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Sign in to our platform</h3>
@@ -146,32 +177,39 @@ window.location.href = '../editUser/add';
     </div>
   </form>
 </Modal>
+
 <Heading class="flex flex-col items-center justify-center ml-10 mt-24" tag="h3">Kreiranje/izmena organizatora festivala</Heading>
 <form class="mr-10 ml-10" on:submit={submitOrganizer}>
   <div class="mt-10 ml-5 mr-5 grid gap-6 mb-6 md:grid-cols-2">
     <div>
-      <Label for="first_name" class="mb-2">Naziv Organizatora</Label>
-      <Input bind:value={organizer.naziv} type="text" id="first_name" placeholder="" required />
+      <Label for="naziv" class="mb-2">Naziv Organizatora</Label>
+      <Input bind:value={organizer.naziv} type="text" id="naziv" class={errors.naziv ? 'border-red-500' : ''} placeholder="" required />
+      {#if errors.naziv}<span class="text-red-500">{errors.naziv}</span>{/if}
     </div>
     <div>
-      <Label for="last_name" class="mb-2">Adresa</Label>
-      <Input bind:value={organizer.adresa} type="text" id="last_name" placeholder="" required />
+      <Label for="adresa" class="mb-2">Adresa</Label>
+      <Input bind:value={organizer.adresa} type="text" id="adresa" class={errors.adresa ? 'border-red-500' : ''} placeholder="" required />
+      {#if errors.adresa}<span class="text-red-500">{errors.adresa}</span>{/if}
     </div>
     <div>
-      <Label for="company" class="mb-2">Godina Osnivanja</Label>
-      <Input bind:value={organizer.godinaOsnivanja} type="text" id="company" placeholder="" required />
+      <Label for="godinaOsnivanja" class="mb-2">Godina Osnivanja</Label>
+      <Input bind:value={organizer.godinaOsnivanja} type="text" id="godinaOsnivanja" class={errors.godinaOsnivanja ? 'border-red-500' : ''} placeholder="" required />
+      {#if errors.godinaOsnivanja}<span class="text-red-500">{errors.godinaOsnivanja}</span>{/if}
     </div>
     <div>
       <Label for="email" class="mb-2">Email</Label>
-      <Input bind:value={organizer.email} type="email" id="email" placeholder="" required />
+      <Input bind:value={organizer.email} type="email" id="email" class={errors.email ? 'border-red-500' : ''} placeholder="" required />
+      {#if errors.email}<span class="text-red-500">{errors.email}</span>{/if}
     </div>
     <div>
-      <Label for="phone" class="mb-2">Kontakt Telefon</Label>
-      <Input bind:value={organizer.kontaktTelefon} type="tel" id="phone" placeholder="" required />
+      <Label for="kontaktTelefon" class="mb-2">Kontakt Telefon</Label>
+      <Input bind:value={organizer.kontaktTelefon} type="tel" id="kontaktTelefon" class={errors.kontaktTelefon ? 'border-red-500' : ''} placeholder="" required />
+      {#if errors.kontaktTelefon}<span class="text-red-500">{errors.kontaktTelefon}</span>{/if}
     </div>
     <div>
       <Label for="logo" class="mb-2">Logo URL</Label>
-      <Input bind:value={organizer.logo} type="text" id="logo" placeholder="https://example.com/logo.png" required />
+      <Input bind:value={organizer.logo} type="text" id="logo" class={errors.logo ? 'border-red-500' : ''} placeholder="https://example.com/logo.png" required />
+      {#if errors.logo}<span class="text-red-500">{errors.logo}</span>{/if}
     </div>
     <Button class="mt-5" type="button" on:click={submitForm}>Submit</Button>
   </div>

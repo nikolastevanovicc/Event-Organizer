@@ -31,7 +31,7 @@ function closeAndNavigate() {
 
 </script>
 
-<Navbar class = "fixed w-full top-0 left-0 bg-[#e5e7eb] bg-opacity-95">
+<Navbar class = "fixed w-full top-0 left-0 bg-[#e5e7eb] bg-opacity-95 z-10">
 <NavBrand href="/">
   <img src="../src/lib/assets/logo-no-background.png" class="me-3 h-7 sm:h-14" alt="Event Organizers" />
   <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Event Organizers</span>

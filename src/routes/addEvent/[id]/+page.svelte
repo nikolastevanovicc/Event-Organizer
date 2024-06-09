@@ -30,7 +30,7 @@ window.location.href = '../editUser/add';
       tip: '',
       cena: '',
       prevoz: '',
-      maksBrojOsoba: '',
+      maxOsoba: '',
       opis: '',
       slike: [] // Novo polje za URL-ove slika
   };
@@ -154,7 +154,7 @@ window.location.href = '../editUser/add';
       </div>
       <div>
           <Label for="maksBrojOsoba">Maksimalan broj osoba</Label>
-          <Input type="number" id="maksBrojOsoba" bind:value={festival.maksBrojOsoba} required />
+          <Input type="number" id="maksBrojOsoba" bind:value={festival.maxOsoba} required />
       </div>
   </div>
   <div class="mb-6">
